@@ -3,15 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from src.student_service import get_student_dashboard
+from fastapi.staticfiles import StaticFiles
 
 from src.predict import predict_single
 
 app = FastAPI(title="PASS - Predictive Academic Success System")
 
-# 👇 вот это добавляем
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # на локальном этапе можно все
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,3 +56,4 @@ def api_predict(student: StudentInput):
         "class": pred["class"],
         "interpretation": "успех" if pred["class"] == 1 else "риск неуспеха",
     }
+app.mount("/dashboard", StaticFiles(directory="web", html=True), name="dashboard")
